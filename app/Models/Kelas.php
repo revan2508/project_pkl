@@ -4,6 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
+
+// IMPORT MODEL RELASI
+use App\Models\User;
+use App\Models\Mapel;
+use App\Models\Tugas;
 
 class Kelas extends Model
 {
@@ -17,11 +23,39 @@ class Kelas extends Model
         'guru_id',
     ];
 
+    // OPTIONAL: casting biar rapi di JSON
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | AUTO GENERATE KODE KELAS
+    |--------------------------------------------------------------------------
+    */
+    protected static function booted()
+    {
+        static::creating(function ($kelas) {
+            if (empty($kelas->kode_kelas)) {
+                $kelas->kode_kelas = strtoupper(Str::random(6));
+            }
+        });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELASI
+    |--------------------------------------------------------------------------
+    */
+
+    // Relasi ke guru (user)
     public function guru()
     {
         return $this->belongsTo(User::class, 'guru_id');
     }
 
+    // Relasi ke mapel (many to many)
     public function mapel()
     {
         return $this->belongsToMany(
@@ -32,6 +66,7 @@ class Kelas extends Model
         )->withTimestamps();
     }
 
+    // Relasi ke siswa (many to many)
     public function siswa()
     {
         return $this->belongsToMany(
@@ -42,6 +77,7 @@ class Kelas extends Model
         )->withTimestamps();
     }
 
+    // Relasi ke tugas
     public function tugas()
     {
         return $this->hasMany(Tugas::class, 'kelas_id');

@@ -18,7 +18,7 @@
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4 p-md-5">
 
-                    <form action="{{ route('guru.tugas.store', $kelas->id) }}" method="POST">
+                    <form action="{{ route('guru.tugas.store', $kelas->id) }}" method="POST" id="formTugas">
                         @csrf
 
                         {{-- MAPEL --}}
@@ -46,7 +46,6 @@
                             <input type="text"
                                    name="judul"
                                    class="form-control form-control-lg @error('judul') is-invalid @enderror"
-                                   placeholder="Contoh: Penjajahan Belanda"
                                    value="{{ old('judul') }}"
                                    required>
                             @error('judul')
@@ -60,7 +59,6 @@
                             <input type="text"
                                    name="perintah"
                                    class="form-control form-control-lg @error('perintah') is-invalid @enderror"
-                                   placeholder="Contoh: Jelaskan secara singkat"
                                    value="{{ old('perintah') }}"
                                    required>
                             @error('perintah')
@@ -70,13 +68,10 @@
 
                         {{-- DESKRIPSI --}}
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">
-                                Deskripsi <span class="text-muted">(boleh tempel link)</span>
-                            </label>
+                            <label class="form-label fw-semibold">Deskripsi</label>
                             <textarea name="deskripsi"
                                       rows="4"
                                       class="form-control @error('deskripsi') is-invalid @enderror"
-                                      placeholder="Contoh: https://drive.google.com/..."
                                       required>{{ old('deskripsi') }}</textarea>
                             @error('deskripsi')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -85,24 +80,33 @@
 
                         {{-- DEADLINE & TIPE --}}
                         <div class="row g-3 mb-4">
+
+                            {{-- DEADLINE --}}
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">
                                     Deadline (Tanggal & Jam)
                                 </label>
+
                                 <input type="datetime-local"
+                                       id="deadline"
                                        name="deadline"
                                        class="form-control form-control-lg @error('deadline') is-invalid @enderror"
                                        value="{{ old('deadline') }}"
+                                       min="{{ now()->format('Y-m-d\TH:i') }}"
                                        required>
+
+                                <small id="errorDeadline" class="text-danger d-none">
+                                    Deadline harus lebih dari waktu sekarang!
+                                </small>
+
                                 @error('deadline')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
+                            {{-- TIPE --}}
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">
-                                    Tipe Tugas
-                                </label>
+                                <label class="form-label fw-semibold">Tipe Tugas</label>
                                 <select name="tipe"
                                         class="form-select form-select-lg @error('tipe') is-invalid @enderror"
                                         required>
@@ -118,6 +122,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+
                         </div>
 
                         {{-- ACTION --}}
@@ -140,4 +145,48 @@
     </div>
 
 </div>
+
+{{-- JS VALIDASI (FIX TOTAL) --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const deadlineInput = document.getElementById('deadline');
+    const errorText = document.getElementById('errorDeadline');
+    const form = document.getElementById('formTugas');
+
+    if (!deadlineInput || !form) {
+        console.error('Element tidak ditemukan!');
+        return;
+    }
+
+    function isInvalidDeadline() {
+        let selected = new Date(deadlineInput.value);
+        let now = new Date();
+        return selected <= now || isNaN(selected);
+    }
+
+    // realtime validasi
+    deadlineInput.addEventListener('input', function () {
+        if (isInvalidDeadline()) {
+            this.classList.add('is-invalid');
+            errorText.classList.remove('d-none');
+        } else {
+            this.classList.remove('is-invalid');
+            errorText.classList.add('d-none');
+        }
+    });
+
+    // blok submit
+    form.addEventListener('submit', function(e) {
+        if (isInvalidDeadline()) {
+            e.preventDefault();
+            deadlineInput.classList.add('is-invalid');
+            errorText.classList.remove('d-none');
+            alert('Deadline tidak boleh sekarang atau lewat!');
+        }
+    });
+
+});
+</script>
+
 @endsection

@@ -34,7 +34,8 @@ class TugasController extends Controller
             'judul'     => 'required',
             'perintah'  => 'required',
             'deskripsi' => 'required',
-            'deadline'  => 'required|date',
+            // 🔥 VALIDASI DEADLINE (FIX)
+            'deadline'  => 'required|date|after:now',
             'tipe'      => 'required|in:individu,kelompok',
         ]);
 
@@ -53,7 +54,7 @@ class TugasController extends Controller
                 'id_user' => $siswa->id,
                 'jenis'   => 'tugas_baru',
                 'judul'   => 'Tugas Baru',
-                'pesan'   => 'Ada tugas baru di kelas '.$kelas->nama_kelas,
+                'pesan'   => 'Ada tugas baru di kelas ' . $kelas->nama_kelas,
                 'url_aksi'=> route('siswa.tugas.show', $tugas->id),
             ]);
         }
@@ -75,7 +76,8 @@ class TugasController extends Controller
             'judul'     => 'required',
             'perintah'  => 'required',
             'deskripsi' => 'required',
-            'deadline'  => 'required|date',
+            // 🔥 VALIDASI DEADLINE (FIX)
+            'deadline'  => 'required|date|after:now',
             'tipe'      => 'required|in:individu,kelompok',
         ]);
 

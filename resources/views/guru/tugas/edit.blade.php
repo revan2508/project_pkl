@@ -92,21 +92,26 @@
 
                         {{-- DEADLINE & TIPE --}}
                         <div class="row">
-                            <div class="col-md-6 mb-4">
+                              {{-- DEADLINE --}}
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold">
-                                    Deadline
+                                    Deadline (Tanggal & Jam)
                                 </label>
-                                <input
-                                    type="date"
-                                    name="deadline"
-                                    class="form-control @error('deadline') is-invalid @enderror"
-                                    value="{{ old('deadline', $tugas->deadline) }}"
-                                    required
-                                >
+
+                                <input type="datetime-local"
+                                       id="deadline"
+                                       name="deadline"
+                                       class="form-control form-control-lg @error('deadline') is-invalid @enderror"
+                                       value="{{ old('deadline') }}"
+                                       min="{{ now()->format('Y-m-d\TH:i') }}"
+                                       required>
+
+                                <small id="errorDeadline" class="text-danger d-none">
+                                    Deadline harus lebih dari waktu sekarang!
+                                </small>
+
                                 @error('deadline')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 

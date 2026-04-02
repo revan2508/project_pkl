@@ -3,13 +3,7 @@
 @section('content')
 <div class="container py-4" style="max-width: 900px">
 
-    {{-- Kembali --}}
-    <div class="mb-3">
-        <a href="{{ url()->previous() }}"
-           class="btn btn-outline-secondary btn-sm rounded-pill">
-            ← Kembali
-        </a>
-    </div>
+    
 
     <div class="card border-0 shadow rounded-4">
         <div class="card-body p-4 p-md-5">
