@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SiswaKelasController extends Controller
-{
+{ 
     public function index()
     {
         $kelasSaya = Auth::user()
@@ -58,7 +58,7 @@ class SiswaKelasController extends Controller
             ->with('mapel.tugas')
             ->where('kelas.id', $id)
             ->firstOrFail();
-            
+
         $tugas = $kelas->mapel->flatMap->tugas;
 
         return view('siswa.kelas_detail', compact('kelas', 'tugas'));
